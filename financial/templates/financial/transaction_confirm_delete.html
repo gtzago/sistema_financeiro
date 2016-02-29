@@ -1,0 +1,16 @@
+<!-- as confirmacoes de remocao do transaction vem automaticamente para esta html-->
+{% extends 'base_financial.html' %}
+{% block content %}
+
+<h1>Delete Contact</h1>
+
+<p>Are you sure you want to delete the transaction {{ transaction }}?</p>
+
+<form action="{% url "delete_transaction" pk=transaction.id %}" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, delete." />
+  <a href="{% url "account_transactions" %}">No, cancel.</a>
+</form>
+
+{% endblock %}

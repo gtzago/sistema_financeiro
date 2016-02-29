@@ -1,0 +1,139 @@
+{% extends 'base_financial.html' %}
+{% block content %}
+
+<h1>Transações da conta - {{ object.name }}</h1>
+<br>
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Descrição</th>
+        <th>Outra conta</th>
+        <th>Saque</th>
+        <th>Depósito</th>
+        <th>Saldo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if object.transactions %}
+      {% for transaction in object.transactions %}
+      
+      {% if transaction.acc_from == object %} <!--pinta o fundo de acordo com o tipo de transacao - credito ou debito-->
+        <tr style="background-color:#FFF0F0">
+          <td> {{ transaction.date }} </td>
+          <td><a href="{% url 'financial:update_transaction' transaction.id%}"> {{ transaction.description }}</a></td>
+          <td>{{ transaction.acc_to }}</td>
+          <td>R$ {{ transaction.value }}</td>
+          <td>R$ </td>
+      {% else %}
+        <tr style="background-color:#F0FFFF">
+          <td> {{ transaction.date }} </td>
+          <td><a href="{% url 'financial:update_transaction' transaction.id%}"> {{ transaction.description }}</a></td>
+          <td>{{ transaction.acc_to }}</td>
+          <td>R$ </td>
+          <td>R$ {{ transaction.value }}</td>
+      {% endif %}
+          <td>R$ {{ transaction.balance }}</td>
+          <td><a href="{% url 'financial:delete_transaction' object.id transaction.id %}"><span class="glyphicon glyphicon-remove"></span></a></td>
+        </tr>
+      {% endfor %}
+      <!--
+      <tr>
+        <td colspan="5"></td>
+        <td>{{ object.balancee }}</td>
+      </tr>
+      -->
+      {% else %}
+      <tr>
+        <td>Sem transações disponíveis.</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endif %}
+      <tr>
+      <!-- preciso modificar este formulário para poder acompanhar a mudança de layout do sistema.-->
+        <form method="POST" class="post">{% csrf_token %}
+          {% for field in form %}
+            <td>{{ field }}</td>
+          {%  endfor %}
+          <td><button type="submit" class="save btn btn-default">Salvar</button></td>
+        </form>
+      </tr>
+      
+      
+</table>
+
+<!--<form method="POST" class="post">{% csrf_token %}-->
+<!--  {{ form.as_table }}-->
+  <!--<table>-->
+  <!--<tr>-->
+  <!--  {% for field in form %}-->
+  <!--  <td>{{ field.label_tag  }}</td>-->
+  <!--  {%  endfor %}-->
+  <!--</tr>-->
+  <!--<tr>-->
+  <!--{% for field in form %}-->
+  <!--<td>{{ field }}</td>-->
+  <!--{%  endfor %}-->
+  <!--</tr>-->
+  <!--</table>-->
+<!--  <button type="submit" class="save btn btn-default">Guardar</button>-->
+<!--</form>-->
+
+<!-- Adiciona transacao num modal -->
+
+
+
+  <!-- Trigger the modal with a button -->
+  
+  <!--<button type="button" class="btn btn-info btn-lg floatingbutton" data-toggle="modal" data-target="#myModal" >Adicionar transação</button>-->
+
+  <!-- Modal -->
+  <!--<div class="modal fade" id="myModal" role="dialog">-->
+  <!--  <div class="modal-dialog modal-lg">-->
+    
+      <!-- Modal content-->
+  <!--    <div class="modal-content">-->
+  <!--      <div class="modal-header">-->
+  <!--        <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+  <!--        <h4 class="modal-title">Adicionar Transação</h4>-->
+  <!--      </div>-->
+  <!--      <div class="modal-body">-->
+
+
+
+  <!--        <form method="POST" class="post">{% csrf_token %}-->
+  <!--          {{ form.as_table }}-->
+            <!--<table>-->
+            <!--<tr>-->
+            <!--  {% for field in form %}-->
+            <!--  <td>{{ field.label_tag  }}</td>-->
+            <!--  {%  endfor %}-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--{% for field in form %}-->
+            <!--<td>{{ field }}</td>-->
+            <!--{%  endfor %}-->
+            <!--</tr>-->
+            <!--</table>-->
+  <!--          <button type="submit" class="save btn btn-default">Guardar</button>-->
+  <!--        </form>-->
+
+
+
+  <!--      </div>-->
+  <!--      <div class="modal-footer">-->
+  <!--        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>-->
+  <!--      </div>-->
+  <!--    </div>-->
+      
+  <!--  </div>-->
+  <!--</div>-->
+  
+
+
+    
+{% endblock %}

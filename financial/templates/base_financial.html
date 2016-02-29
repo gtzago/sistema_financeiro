@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="pt">
+    <head>
+        <meta charset="utf-8" />
+        <title>Gerenciador Financeiro</title>
+       
+
+       <link rel="stylesheet" href="{% static "financial/financial.css"  %}">
+       
+        <!-- Latest compiled and minified CSS -->
+        
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        
+      
+        <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" media="screen" />
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+        
+    </head>
+    
+    
+    <body>
+      
+
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#">Gerenciador Financeiro</a>
+            </div>
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="{% url 'financial:index'%}">Contas</a></li>
+              <li><a href="{% url 'financial:create_transaction'%}">Nova Transação</a></li>
+              <li><a href="#">Relatórios</a></li>
+              <li><a href="#">Page 3</a></li>
+            </ul>
+          </div>
+        </nav>
+    
+    
+        <div class = "container-fluid">
+          <div class = "row">
+            <div class="col-md-2"></div>
+            
+            <div class="col-md-8">
+              {% block content %}{% endblock %}
+            </div>
+            
+            <div class="col-md-2"></div>
+          </div>
+        </div>
+    
+    
+    </body>
+</html>
+

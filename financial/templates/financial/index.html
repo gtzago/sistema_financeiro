@@ -1,0 +1,36 @@
+{% extends 'base_financial.html' %}
+{% block content %}
+
+
+{% load staticfiles %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Conta</th>
+        <th>Descrição</th>
+        <th>Tipo</th>
+        <th>Saldo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if accounts_list %}
+      {% for account in accounts_list %}
+      <tr>
+        <td><a href="{% url 'financial:account_transactions' account.id%}"> {{ account.name }} </a></td>
+        <td>{{ account.description }}</td>
+        <td>{{ account.get_acc_type_display }}</td>
+        <td>R$ {{ account.balance }}</td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td>Sem contas disponíveis.</td>
+        <td></td>
+        <td></td>
+        <td>R$ </td>
+      </tr>
+      {% endif %}
+    </table>
+    
+{% endblock %}
+
