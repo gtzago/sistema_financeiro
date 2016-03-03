@@ -30,7 +30,7 @@
         <tr style="background-color:#F0FFFF">
           <td> {{ transaction.date }} </td>
           <td><a href="{% url 'financial:update_transaction' transaction.id%}"> {{ transaction.description }}</a></td>
-          <td>{{ transaction.acc_to }}</td>
+          <td>{{ transaction.acc_from }}</td>
           <td>R$ </td>
           <td>R$ {{ transaction.value }}</td>
       {% endif %}
@@ -54,7 +54,7 @@
       </tr>
       {% endif %}
       <tr>
-      <!-- preciso modificar este formulário para poder acompanhar a mudança de layout do sistema.-->
+      <!-- Preciso verificar por erros. -->
         <form method="POST" class="post">{% csrf_token %}
           {% for field in form %}
             <td>{{ field }}</td>

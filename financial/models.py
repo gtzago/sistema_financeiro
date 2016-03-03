@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -99,7 +100,7 @@ class Transaction(models.Model):
         '''
         try:
             if self.acc_to == self.acc_from:
-                raise ValidationError(
+                raise forms.ValidationError(
                     u'Não se pode transferir de uma conta para ela mesma.')
         except:
             pass

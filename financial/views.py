@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Create your views here.
 from django.core.urlresolvers import reverse
 from django.db import transaction as dj_transaction
@@ -84,11 +86,41 @@ class AccountDetailView(generic.CreateView):
         Esta classe eh utilizada para criar entradas na base de dados.
     '''
     model = Transaction
-    form_class = TransactionForm  # formulario que esta sendo usado, descrito em outro arquivo (forms.py).
+    # formulario que esta sendo usado, descrito em outro arquivo (forms.py).
+    form_class = TransactionForm
     template_name = 'financial/account_transactions.html'
     # fields = ['date', 'description', 'acc_to', 'value'] # sao os campos
     # utilizados no formulario. Caso eu nao apontasse qual form utilziar.
     success_url = 'create'
+
+    def form_valid(self, form):
+        '''
+            Verifica erros entre os campos.
+        '''
+        transaction_form = form.save(
+            commit=False)  # pega o formulario preenchido
+
+        credit = form.cleaned_data.get("credit")  # pega o campo credito
+        debit = form.cleaned_data.get("debit")  # pega o campo débito
+
+        # verifica se o usuário preencheu crédito ou débito e adequa os campos.
+        if debit:
+            transaction_form.acc_from = Account.objects.get(
+                pk=self.kwargs.get('pk'))
+            transaction_form.acc_to = form.cleaned_data.get("acc_to")
+            transaction_form.value = debit
+        elif credit:
+            transaction_form.acc_to = Account.objects.get(
+                pk=self.kwargs.get('pk'))
+            transaction_form.acc_from = form.cleaned_data.get("acc_to")
+            transaction_form.value = credit
+
+        # preciso verificar como levantar erros e não permitir que a conta
+        # debitada seja igual à conta creditada.
+        transaction_form.clean()
+        transaction_form.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         '''

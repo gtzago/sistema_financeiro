@@ -6,11 +6,12 @@ from .models import Transaction
 
 class TransactionForm(ModelForm):
 
-    debit = forms.CharField()  # cria um novo campo no formulario
+    debit = forms.DecimalField(required=False)  # cria um novo campo no formulario
+    credit = forms.DecimalField(required=False)
 
-    # modifica o metodo save.
-    # def save(self):
+    def is_valid(self):
+        return True
 
     class Meta:
         model = Transaction
-        fields = ['date', 'description', 'acc_to', 'value']
+        fields = ['date', 'description', 'acc_to']
