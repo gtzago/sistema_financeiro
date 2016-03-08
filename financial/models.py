@@ -11,7 +11,6 @@ from django.utils import timezone
 
 
 # Create your models here.
-# Create your models here.
 class Account(models.Model):
     name = models.CharField("nome da conta", max_length=50)
     description = models.CharField(max_length=200)
