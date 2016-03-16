@@ -1,12 +1,12 @@
 {% extends 'base_financial.html' %}
 
 {% block content %}
-
     <form method="POST" class="post">{% csrf_token %}
     <ul>
         {{ form.as_table }}
         <button type="submit" class="save btn btn-default">Guardar</button>
     </ul>
     </form>
+	<!-- {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}  -->    
     
 {% endblock %}

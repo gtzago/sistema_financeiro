@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import transaction as dj_transaction
 from django.db.models import Q
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -68,14 +70,14 @@ class Account(models.Model):
 
 
 class Transaction(models.Model):
-    date = models.DateField("data")
-    description = models.CharField("descrição", max_length=200)
+    date = models.DateField("data", blank=False)
+    description = models.CharField("descrição", max_length=200, blank=False)
     acc_from = models.ForeignKey(
-        Account, on_delete=models.PROTECT, verbose_name="conta debitada", related_name='taken')
+        Account, on_delete=models.PROTECT, verbose_name="conta debitada", related_name='taken', blank=False)
     acc_to = models.ForeignKey(
-        Account, on_delete=models.PROTECT, verbose_name="conta creditada", related_name='added')
+        Account, on_delete=models.PROTECT, verbose_name="conta creditada", related_name='added', blank=False)
     value = models.DecimalField("valor", max_digits=15, decimal_places=2,  validators=[
-                                validators.MinValueValidator(0.0)])
+                                validators.MinValueValidator(0.0)], blank=False)
 
     def is_credit(self, account):
         return self.acc_to == account
@@ -92,14 +94,44 @@ class Transaction(models.Model):
     def __str__(self):
         return self.description
 
+    @dj_transaction.atomic
+    def delete(self, *args, **kwargs):
+        '''
+            Sobrescrevo o método para realizar contas antes após deletar a transação.
+        '''
+        # altero o saldo das contas.
+        super(Transaction, self).delete(*args, **kwargs)
+        self.acc_from.balance += self.value
+        self.acc_from.save()
+
+        self.acc_to.balance -= self.value
+        self.acc_to.save()        
+
     def clean(self):
         '''
         Testa antes de salvar o modelo no banco.
         Somente neste metodo se pode utilizar validação entre campos diferentes.
         '''
+        '''
+            try:
+               You do your operations here;
+               ......................
+            except ExceptionI:
+               If there is ExceptionI, then execute this block.
+            except ExceptionII:
+               If there is ExceptionII, then execute this block.
+               ......................
+            else:
+               If there is no exception then execute this block. 
+        '''
         try:
             if self.acc_to == self.acc_from:
-                raise forms.ValidationError(
+                raise ValidationError(
                     u'Não se pode transferir de uma conta para ela mesma.')
-        except:
+            if self.acc_from.acc_type!='IN': # se a conta for do tipo RECURSO, não é necessário verificar saldo.
+                if self.acc_from.balance<=self.value: # verifica o saldo da conta antes de realizar a transação.
+                    raise ValidationError(
+                        u'Saldo insuficiente para realizar a transação.')                
+            
+        except Account.DoesNotExist as e:
             pass

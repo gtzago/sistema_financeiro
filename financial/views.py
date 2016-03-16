@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views import generic
 from django.views.generic.edit import FormView
 
-from financial.forms import TransactionForm
+from financial.forms import TransactionForm, AccountForm
 from financial.models import Transaction
 
 from .models import Account
@@ -19,12 +19,15 @@ class IndexView(generic.ListView):
     template_name = 'financial/index.html'
     context_object_name = 'accounts_list'
 
+    form_class = AccountForm
+
     def get_queryset(self):
         """
         Return the last five published questions (not including those set to be
         published in the future).
         """
         return Account.objects.all()
+    
 
 
 class TransactionCreateView(generic.CreateView):
@@ -36,8 +39,7 @@ class TransactionCreateView(generic.CreateView):
     template_name = 'financial/create_transaction.html'
     fields = ['date', 'description', 'acc_from', 'acc_to', 'value']
     success_url = 'create'
-
-
+    
 class TransactionUpdateView(generic.UpdateView):
 
     '''
@@ -59,7 +61,7 @@ class TransactionUpdateView(generic.UpdateView):
 class TransactionDeleteView(generic.DeleteView):
 
     '''
-        Esta classe eh utilizada para criar entradas na base de dados.
+        Esta classe eh utilizada para deletar entradas da base de dados.
     '''
     model = Transaction
     #template_name = 'financial/update_transaction.html'

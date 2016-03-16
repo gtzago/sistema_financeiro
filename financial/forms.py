@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Transaction
+from .models import Transaction, Account
 
 
 class TransactionForm(ModelForm):
@@ -15,3 +15,8 @@ class TransactionForm(ModelForm):
     class Meta:
         model = Transaction
         fields = ['date', 'description', 'acc_to']
+
+class AccountForm(ModelForm):
+    class Meta:
+        model = Account
+        fields = '__all__'

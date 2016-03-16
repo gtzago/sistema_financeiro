@@ -32,5 +32,12 @@
       {% endif %}
     </table>
     
+    <form method="POST" class="post">{% csrf_token %}
+    <ul>
+        {{ form.as_table }}
+        <button type="submit" class="save btn btn-default">Salvar</button>
+    </ul>
+    </form>    
+    
 {% endblock %}
 
