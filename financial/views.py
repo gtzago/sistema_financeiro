@@ -15,21 +15,26 @@ from financial.models import Transaction
 from .models import Account
 
 
-class IndexView(generic.ListView):
+class IndexView(generic.CreateView):
     template_name = 'financial/index.html'
     context_object_name = 'accounts_list'
+    model = Account
 
     form_class = AccountForm
 
-    def get_queryset(self):
-        """
-        Return the last five published questions (not including those set to be
-        published in the future).
-        """
-        return Account.objects.all()
+    def get_context_data(self, **kwargs):
+        '''
+            Adiciona parametros extras no template.
+        '''
+        context = super(IndexView, self).get_context_data(**kwargs)
+
+        context[self.context_object_name] = Account.objects.all()
+
+        return context
+
+    def get_success_url(self):
+        return reverse('financial:index')
     
-
-
 class TransactionCreateView(generic.CreateView):
 
     '''
@@ -64,15 +69,10 @@ class TransactionDeleteView(generic.DeleteView):
         Esta classe eh utilizada para deletar entradas da base de dados.
     '''
     model = Transaction
-    #template_name = 'financial/update_transaction.html'
-    #fields = ['date', 'description','acc_from', 'acc_to', 'value']
-    #success_url = '/financial'
 
     def get_success_url(self):
         # retorna para a url com o parametro pk (id da conta)
-        return reverse('financial:account_transactions', args=(self.kwargs.get('account_pk')))
-        # return reverse('financial:account_transactions',
-        # args=self.kwargs.get('pk'))
+        return reverse('financial:account_transactions', kwargs={'pk': (self.kwargs.get('account_pk'))})
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
@@ -80,6 +80,18 @@ class TransactionDeleteView(generic.DeleteView):
     # def get_object(self, queryset=None):
     #    obj = Transaction.objects.get(id=self.kwargs['pk'])
     #    return obj
+    
+class AccountDeleteView(generic.DeleteView):
+
+    '''
+        Esta classe eh utilizada para deletar entradas da base de dados.
+    '''
+    model = Account
+    def get_success_url(self):
+        return reverse('financial:index')
+
+#     def get(self, *args, **kwargs):
+#         return self.post(*args, **kwargs)
 
 
 class AccountDetailView(generic.CreateView):
@@ -137,4 +149,4 @@ class AccountDetailView(generic.CreateView):
 
     def get_success_url(self):
         # retorna para a url com o parametro pk (id da conta)
-        return reverse('financial:account_transactions', args=self.kwargs.get('pk'))
+        return reverse('financial:account_transactions', kwargs={'pk': self.kwargs.get('pk')})

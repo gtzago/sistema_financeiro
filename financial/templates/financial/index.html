@@ -20,6 +20,7 @@
         <td>{{ account.description }}</td>
         <td>{{ account.get_acc_type_display }}</td>
         <td>R$ {{ account.balance }}</td>
+        <td><a href="{% url 'financial:delete_account' account.id %}"><span class="glyphicon glyphicon-remove"></span></a></td>
       </tr>
       {% endfor %}
       {% else %}
@@ -30,14 +31,16 @@
         <td>R$ </td>
       </tr>
       {% endif %}
+      <tr>
+        <form method="POST" class="post">{% csrf_token %}
+          {% for field in form %}
+            <td>{{ field }}</td>
+          {%  endfor %}
+          <td><button type="submit" class="save btn btn-default">Salvar</button></td>
+        </form>
+      </tr>    
     </table>
     
-    <form method="POST" class="post">{% csrf_token %}
-    <ul>
-        {{ form.as_table }}
-        <button type="submit" class="save btn btn-default">Salvar</button>
-    </ul>
-    </form>    
     
 {% endblock %}
 
