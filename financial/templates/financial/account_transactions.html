@@ -90,6 +90,61 @@
       
 </table>
 
+	<div id="chart_container" style="width:100%; height:400px;"></div>
+	   
+	<script>
+		{% if object.acc_type == 'EX' %}
+			$(function () {
+			$('#chart_container').highcharts({
+			chart: {type: 'column'},
+			title: { text: 'Conta: '+'{{ object.name }}'	},
+			xAxis: { categories:[
+	        		{% for transaction in object.transactions %}
+						'{{ transaction.date }}' ,
+		 			{% endfor %}
+						]
+			},
+			yAxis: { title: { text: 'Valores das transações'	}	},
+			series: [
+			         {name: '{{ object.name }}',
+			        	 data: [
+			         {% for transaction in object.transactions %}
+			         		{{ transaction.value }} ,
+					 {% endfor %}
+			         ]
+			         }
+			]	
+			});	
+			});
+		{% else %}
+			$(function () {
+				$('#chart_container').highcharts({
+				chart: {type: 'column'},
+				title: { text: 'Conta: '+'{{ object.name }}'	},
+				xAxis: { categories:[
+		        		{% for transaction in object.transactions %}
+							'{{ transaction.date }}' ,
+			 			{% endfor %}
+							]
+						
+				},
+				yAxis: { title: { text: 'Saldo'	}	},
+				series: [
+				         {name: '{{ object.name }}',
+				        	 data: [
+				         {% for transaction in object.transactions %}
+				         		{{ transaction.balance }} ,
+						 {% endfor %}
+				         ]
+				         }
+				]	
+				});	
+				});		
+			{% endif %}
+	</script>    
+
+
+
 <!--<form method="POST" class="post">{% csrf_token %}-->
 <!--  {{ form.as_table }}-->
   <!--<table>-->

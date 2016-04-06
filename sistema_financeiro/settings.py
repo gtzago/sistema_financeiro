@@ -124,7 +124,6 @@ STATIC_URL = '/static/'
 
 # minhas alteracoes
 
-
 # THOUSAND_SEPARATOR = '.'
 # DECIMAL_SEPARATOR = ','
 

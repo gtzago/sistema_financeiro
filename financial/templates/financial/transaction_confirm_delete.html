@@ -2,15 +2,29 @@
 {% extends 'base_financial.html' %}
 {% block content %}
 
-<h1>Delete Contact</h1>
+<h1>Deletar Transação</h1>
 
-<p>Are you sure you want to delete the transaction {{ transaction }}?</p>
+<form action="" method="post">{% csrf_token %}
+    <p>Tem certeza que deseja excluir a conta de nome "{{ object }}"?</p>
+    <input type="submit" value="Confirmar" />
+    <a href="{% url 'financial:account_transactions' account_pk %}">Não, cancele.</a>
+</form>
+
+
+{% comment %}
+<!--
+<h1>Deletar Transação</h1>
+
+<p>Tem certeza que deseja deletar a transação: {{ transaction }}?</p>
 
 <form action="{% url "delete_transaction" pk=transaction.id %}" method="POST">
   {% csrf_token %}
 
-  <input type="submit" value="Yes, delete." />
-  <a href="{% url "account_transactions" %}">No, cancel.</a>
+  <input type="submit" value="Sim" />
+  <a href="{% url "account_transactions" %}">Não, cancele.</a>
 </form>
-
+  -->
+  
+{% endcomment %}
+  
 {% endblock %}

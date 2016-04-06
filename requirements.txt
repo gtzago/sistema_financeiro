@@ -1,1 +1,2 @@
 django
+sudo easy_install -U GChartWrapper 

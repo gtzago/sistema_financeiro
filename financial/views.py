@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Create your views here.
+from GChartWrapper import *
 from django.core.urlresolvers import reverse
 from django.db import transaction as dj_transaction
 from django.http import HttpResponseRedirect
@@ -29,11 +30,14 @@ class IndexView(generic.CreateView):
         context = super(IndexView, self).get_context_data(**kwargs)
 
         context[self.context_object_name] = Account.objects.all()
+        
 
         return context
 
     def get_success_url(self):
         return reverse('financial:index')
+    
+
     
 class TransactionCreateView(generic.CreateView):
 
@@ -74,8 +78,19 @@ class TransactionDeleteView(generic.DeleteView):
         # retorna para a url com o parametro pk (id da conta)
         return reverse('financial:account_transactions', kwargs={'pk': (self.kwargs.get('account_pk'))})
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        '''
+            Adiciona parametros extras no template.
+        '''
+        context = super(TransactionDeleteView, self).get_context_data(**kwargs)
+        # adiciona uma variavel chamada pk dentro de kwargs de acordo com o
+        # parametro passado na url ('pk').
+        context['account_pk'] = self.kwargs.get('account_pk')
+
+        return context
+
+#     def get(self, *args, **kwargs):
+#         return self.post(*args, **kwargs)
 
     # def get_object(self, queryset=None):
     #    obj = Transaction.objects.get(id=self.kwargs['pk'])
@@ -145,8 +160,10 @@ class AccountDetailView(generic.CreateView):
         # parametro passado na url ('pk').
         context['object'] = Account.objects.get(pk=self.kwargs.get('pk'))
 
+        
         return context
 
     def get_success_url(self):
         # retorna para a url com o parametro pk (id da conta)
         return reverse('financial:account_transactions', kwargs={'pk': self.kwargs.get('pk')})
+    
